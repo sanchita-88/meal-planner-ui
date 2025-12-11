@@ -167,9 +167,9 @@ const Dashboard = () => {
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
                 // **FIXED CLASSNAME FOR DESKTOP VISIBILITY**
-                className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
-                    ${isSidebarOpen ? 'fixed translate-x-0' : 'fixed -translate-x-full'} 
-                    md:relative md:flex md:translate-x-0 transition-transform duration-300`} 
+              className={`w-80 bg-white border-r border-gray-100 flex-col shadow-xl z-30 h-full 
+                    ${isSidebarOpen ? 'fixed translate-x-0 flex' : 'fixed -translate-x-full hidden'} 
+                    md:relative md:flex md:translate-x-0 transition-transform duration-300`}
             >
                 {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">
