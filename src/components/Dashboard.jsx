@@ -7,9 +7,7 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports: REMOVED STATIC IMPORTS TO AVOID RUNTIME CRASH
-// import html2canvas from 'html2canvas'; // REMOVED
-// import jsPDF from 'jspdf'; // REMOVED
+// IMPORTANT: Static PDF Imports REMOVED to prevent "Failed to resolve module specifier" error
 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
@@ -167,9 +165,9 @@ const Dashboard = () => {
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
                 // **FIXED CLASSNAME FOR DESKTOP VISIBILITY**
-              className={`w-80 bg-white border-r border-gray-100 flex-col shadow-xl z-30 h-full 
-                    ${isSidebarOpen ? 'fixed translate-x-0 flex' : 'fixed -translate-x-full hidden'} 
-                    md:relative md:flex md:translate-x-0 transition-transform duration-300`}
+              className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
+                    ${isSidebarOpen ? 'fixed translate-x-0 flex' : 'fixed -translate-x-full hidden'} 
+                    md:relative md:flex md:translate-x-0 transition-transform duration-300`}
             >
                 {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">
