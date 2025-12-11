@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { 
-    Download, RefreshCw, Loader2, ThumbsUp, ThumbsDown, 
-    ChefHat, Activity, LogOut, Utensils, Menu 
-} from 'lucide-react'; // Added 'Menu' icon for mobile
+    Download, RefreshCw, Loader2, ThumbsUp, 
+    ChefHat, LogOut, Utensils, Menu 
+} from 'lucide-react'; 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.104:3000';
@@ -15,7 +15,9 @@ const Dashboard = () => {
     const { token, logout } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [plan, setPlan] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for mobile toggle
+    
+    // New state for mobile sidebar visibility
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
     
     // User Inputs
     const [formData, setFormData] = useState({
@@ -29,6 +31,18 @@ const Dashboard = () => {
         allergies: '',
         dislikes: ''
     });
+
+    // Close sidebar if screen size changes from mobile to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) { // Tailwind's 'md' breakpoint
+                setIsSidebarOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
 
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -88,14 +102,16 @@ const Dashboard = () => {
         // STATIC BACKGROUND: using a subtle off-white background
         <div className="flex h-screen bg-gray-50 text-gray-800 font-sans">
             
-            {/* --- SIDEBAR (RESPONSIVE FIX) --- */}
+            {/* --- SIDEBAR (RESPONSIVE DRAWER FIX) --- */}
             <motion.div 
-                initial={false} // Override default initial animation to control visibility
-                animate={{ x: isSidebarOpen ? 0 : -320 }} // Animate position based on state
+                // Fix: Sidebar is fixed on mobile (for the drawer effect) and relative on desktop (to be part of the flex layout)
+                // Default visibility is hidden (via translate-x-full) and only shown on 'md' screens (md:flex) or when state is open.
+                initial={false} 
+                animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
                 className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full fixed md:relative transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} md:flex`}
             >
-                {/* Logo */}
+                {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">
                     <div className="flex items-center gap-3">
                         <div className="bg-teal-50 p-2 rounded-lg">
@@ -103,10 +119,10 @@ const Dashboard = () => {
                         </div>
                         <h1 className="text-xl font-bold text-gray-800 tracking-tight">AI Meal<span className="text-yellow-600">Planner</span></h1>
                     </div>
-                    {/* Close button for mobile */}
-                    <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-500 hover:text-red-500">
-                        <LogOut size={20} />
-                    </button>
+                    {/* Close button for mobile */}
+                    <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-500 hover:text-red-500">
+                        <LogOut size={20} />
+                    </button>
                 </div>
                 
                 {/* Form */}
@@ -198,18 +214,23 @@ const Dashboard = () => {
             </motion.div>
 
             {/* --- MAIN CONTENT AREA --- */}
+            {/* Conditional Overlay for Mobile */}
+            {isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
+            
             <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
 
-                {/* --- MOBILE MENU BUTTON --- */}
-                <div className="md:hidden flex justify-end mb-4">
-                    <button 
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="p-3 bg-white rounded-xl shadow-md text-gray-700 hover:text-teal-600 transition"
-                    >
-                        <Menu size={20} />
-                    </button>
-                </div>
-                {/* --- END MOBILE MENU BUTTON --- */}
+                {/* --- MOBILE MENU BUTTON --- */}
+                {/* Only show on mobile, and only when the plan is generated (or if we need it visible all the time) */}
+                <div className="md:hidden flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-gray-800">Weekly Plan</h2>
+                    <button 
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="p-3 bg-white rounded-xl shadow-md text-gray-700 hover:text-teal-600 transition"
+                    >
+                        <Menu size={20} />
+                    </button>
+                </div>
+                {/* --- END MOBILE MENU BUTTON --- */}
 
                 <div className="max-w-7xl mx-auto">
                     {!plan ? (
@@ -233,13 +254,13 @@ const Dashboard = () => {
                                     <p className="text-gray-500 font-medium">Target: {plan.targets.calories} kcal</p>
                                 </div>
                                 
-                                {/* Macrod/PDF Wrapper */}
+                                {/* Macrod/PDF Wrapper */}
                                 <div className="flex items-center gap-3">
                                     <div className="flex gap-2">
                                         <div className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl font-bold">P: {plan.targets.protein}g</div>
                                         <div className="bg-teal-100 text-teal-700 px-4 py-2 rounded-xl font-bold">C: {plan.targets.carbs}g</div>
                                     </div>
-                                    
+                                    
                                     {/* --- NEW PDF BUTTON --- */}
                                     <motion.button 
                                         whileHover={{ scale: 1.05 }}
