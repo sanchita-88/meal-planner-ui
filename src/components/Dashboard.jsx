@@ -7,9 +7,9 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+// PDF Library Imports: REMOVED STATIC IMPORTS TO AVOID RUNTIME CRASH
+// import html2canvas from 'html2canvas'; // REMOVED
+// import jsPDF from 'jspdf'; // REMOVED
 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
@@ -23,7 +23,7 @@ const Dashboard = () => {
     
     // UI and State Management
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-    const planRef = useRef(null); // Reference to the element containing the meal plan
+    const planRef = useRef(null); // Reference to the element containing the meal plan
 
     // User Inputs
     const [formData, setFormData] = useState({
@@ -94,7 +94,7 @@ const Dashboard = () => {
         catch (err) { console.error(err); }
     };
 
-    // **PDF EXPORT IMPLEMENTATION**
+    // **PDF EXPORT IMPLEMENTATION - DYNAMIC IMPORT FIX**
     const handleExportPDF = async () => { 
         const input = planRef.current;
         if (!input) return;
@@ -102,15 +102,24 @@ const Dashboard = () => {
         setLoading(true); 
 
         try {
+            // Dynamically import libraries inside the function
+            const [
+                { default: importedHtml2canvas }, 
+                { default: importedJsPDF }
+            ] = await Promise.all([
+                import('html2canvas'),
+                import('jspdf')
+            ]);
+
             // 1. Capture the HTML content as a canvas image
-            const canvas = await html2canvas(input, {
+            const canvas = await importedHtml2canvas(input, {
                 scale: 2, 
                 useCORS: true,
             });
             
             // 2. Convert canvas to image data and initialize PDF
             const imgData = canvas.toDataURL('image/jpeg');
-            let pdf = new jsPDF('p', 'mm', 'a4'); 
+            let pdf = new importedJsPDF('p', 'mm', 'a4'); 
             
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -120,17 +129,17 @@ const Dashboard = () => {
             
             // 3. Check if content exceeds one page (Multi-page handling for long plans)
             if (imgHeight > pdfHeight) {
-                 const totalPages = Math.ceil(imgHeight / pdfHeight);
-                 
-                 for (let i = 0; i < totalPages; i++) {
-                     let position = -(i * pdfHeight);
-                     if (i > 0) {
-                         pdf.addPage();
-                     }
-                     pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
-                 }
+                const totalPages = Math.ceil(imgHeight / pdfHeight);
+                
+                for (let i = 0; i < totalPages; i++) {
+                    let position = -(i * pdfHeight);
+                    if (i > 0) {
+                        pdf.addPage();
+                    }
+                    pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+                }
             } else {
-                 pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeight);
             }
 
             // 4. Download the file
@@ -159,8 +168,8 @@ const Dashboard = () => {
                 transition={{ duration: 0.3 }}
                 // **FIXED CLASSNAME FOR DESKTOP VISIBILITY**
                 className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
-                    ${isSidebarOpen ? 'fixed translate-x-0' : 'fixed -translate-x-full'} 
-                    md:relative md:flex md:translate-x-0 transition-transform duration-300`} 
+                    ${isSidebarOpen ? 'fixed translate-x-0' : 'fixed -translate-x-full'} 
+                    md:relative md:flex md:translate-x-0 transition-transform duration-300`} 
             >
                 {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">
@@ -296,7 +305,7 @@ const Dashboard = () => {
                             <p className="text-gray-500 text-lg max-w-md">Your personalized nutrition journey starts here. Use the sidebar to generate your plan.</p>
                         </motion.div>
                     ) : (
-                        // Attach ref for PDF generation here
+                        // Attach ref for PDF generation here
                         <motion.div ref={planRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
                             {/* Header Stats Card with PDF Button */}
                             <div className="bg-white p-6 rounded-2xl shadow-md flex flex-wrap justify-between items-center gap-4 border border-gray-100">
