@@ -7,7 +7,7 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports: REMOVED STATIC IMPORTS TO PREVENT THE "Failed to resolve module specifier" CRASH
+// PDF Library Imports: REMOVED STATIC IMPORTS to prevent the "Failed to resolve module specifier" CRASH
 // import html2canvas from 'html2canvas'; // REMOVED
 // import jsPDF from 'jspdf'; // REMOVED
 
@@ -108,6 +108,7 @@ const Dashboard = () => {
                 import('jspdf')
             ]);
             
+            // Handle both ES module default exports and legacy exports
             const importedHtml2canvas = importedModules[0].default || importedModules[0];
             const importedJsPDF = importedModules[1].default || importedModules[1];
 
