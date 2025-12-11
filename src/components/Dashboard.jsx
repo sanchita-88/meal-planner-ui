@@ -7,9 +7,9 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports: RE-ADDING STATIC IMPORTS (Necessary for logic to run)
-import html2canvas from 'html2canvas'; 
-import jsPDF from 'jspdf'; 
+// PDF Library Imports: REMOVED STATIC IMPORTS TO PREVENT THE "Failed to resolve module specifier" CRASH
+// import html2canvas from 'html2canvas'; // REMOVED
+// import jsPDF from 'jspdf'; // REMOVED
 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
@@ -94,7 +94,7 @@ const Dashboard = () => {
         catch (err) { console.error(err); }
     };
 
-    // **PDF EXPORT IMPLEMENTATION (Standard Static Imports)**
+    // **PDF EXPORT IMPLEMENTATION - DYNAMIC IMPORT FIX (Correct Syntax)**
     const handleExportPDF = async () => { 
         const input = planRef.current;
         if (!input) return;
@@ -102,15 +102,24 @@ const Dashboard = () => {
         setLoading(true); 
 
         try {
+            // Dynamically import libraries (this bypasses the module specifier error)
+            const importedModules = await Promise.all([
+                import('html2canvas'),
+                import('jspdf')
+            ]);
+            
+            const importedHtml2canvas = importedModules[0].default || importedModules[0];
+            const importedJsPDF = importedModules[1].default || importedModules[1];
+
             // 1. Capture the HTML content as a canvas image
-            const canvas = await html2canvas(input, {
+            const canvas = await importedHtml2canvas(input, {
                 scale: 2, 
                 useCORS: true,
             });
             
             // 2. Convert canvas to image data and initialize PDF
             const imgData = canvas.toDataURL('image/jpeg');
-            let pdf = new jsPDF('p', 'mm', 'a4'); 
+            let pdf = new importedJsPDF('p', 'mm', 'a4'); 
             
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
