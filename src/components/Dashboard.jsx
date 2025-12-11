@@ -7,7 +7,9 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// IMPORTANT: Static PDF Imports REMOVED to prevent "Failed to resolve module specifier" error
+// PDF Library Imports: RE-ADDING STATIC IMPORTS (Necessary for logic to run)
+import html2canvas from 'html2canvas'; 
+import jsPDF from 'jspdf'; 
 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
@@ -92,7 +94,7 @@ const Dashboard = () => {
         catch (err) { console.error(err); }
     };
 
-    // **PDF EXPORT IMPLEMENTATION - DYNAMIC IMPORT FIX**
+    // **PDF EXPORT IMPLEMENTATION (Standard Static Imports)**
     const handleExportPDF = async () => { 
         const input = planRef.current;
         if (!input) return;
@@ -100,24 +102,15 @@ const Dashboard = () => {
         setLoading(true); 
 
         try {
-            // Dynamically import libraries inside the function
-            const [
-                { default: importedHtml2canvas }, 
-                { default: importedJsPDF }
-            ] = await Promise.all([
-                import('html2canvas'),
-                import('jspdf')
-            ]);
-
             // 1. Capture the HTML content as a canvas image
-            const canvas = await importedHtml2canvas(input, {
+            const canvas = await html2canvas(input, {
                 scale: 2, 
                 useCORS: true,
             });
             
             // 2. Convert canvas to image data and initialize PDF
             const imgData = canvas.toDataURL('image/jpeg');
-            let pdf = new importedJsPDF('p', 'mm', 'a4'); 
+            let pdf = new jsPDF('p', 'mm', 'a4'); 
             
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -164,9 +157,9 @@ const Dashboard = () => {
                 initial={false} 
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
-                // **FIXED CLASSNAME FOR DESKTOP VISIBILITY**
+                // **FINAL AGGRESSIVE CSS FIX**
               className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
-                    ${isSidebarOpen ? 'fixed translate-x-0 flex' : 'fixed -translate-x-full hidden'} 
+                    fixed ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
                     md:relative md:flex md:translate-x-0 transition-transform duration-300`}
             >
                 {/* Logo & Close Button */}
