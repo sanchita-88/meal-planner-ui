@@ -169,7 +169,7 @@ const Dashboard = () => {
                 // FINAL UI FIX 2/2: Highest Z-index and ensures MD:relative takes precedence.
               className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-50 h-screen 
                     fixed ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-                    md:relative md:flex md:translate-x-0 transition-transform duration-300`}
+                    md:relative md:flex md:translate-x-0 transition-transform duration-300 desktop-visible`}
             >
                 {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">

@@ -28,3 +28,11 @@ body {
   background: #E2E8F0;
   border-radius: 20px;
 }
+/* FINAL DESKTOP UI OVERRIDE */
+@media (min-width: 768px) {
+  .desktop-visible {
+    transform: translateX(0) !important;
+    position: relative !important;
+    display: flex !important;
+  }
+}
