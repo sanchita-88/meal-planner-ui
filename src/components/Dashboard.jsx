@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -6,6 +6,11 @@ import {
     Download, RefreshCw, Loader2, ThumbsUp, 
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
+
+// PDF Library Imports
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.104:3000';
@@ -16,9 +21,10 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [plan, setPlan] = useState(null);
     
-    // New state for mobile sidebar visibility
+    // UI and State Management
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-    
+    const planRef = useRef(null); // Reference to the element containing the meal plan
+
     // User Inputs
     const [formData, setFormData] = useState({
         age: 21,
@@ -33,15 +39,15 @@ const Dashboard = () => {
     });
 
     // Close sidebar if screen size changes from mobile to desktop
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth >= 768) { // Tailwind's 'md' breakpoint
-                setIsSidebarOpen(false);
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) { // Tailwind's 'md' breakpoint
+                setIsSidebarOpen(false); // Ensure mobile state is reset on desktop
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
 
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -88,10 +94,43 @@ const Dashboard = () => {
         catch (err) { console.error(err); }
     };
 
-    // Dummy PDF Export function (Requires installing jspdf or html2canvas)
+    // **PDF EXPORT IMPLEMENTATION**
     const handleExportPDF = async () => { 
-        alert("PDF Export functionality coming soon! This button is now active.");
-        // Here you would add logic using jspdf or html2canvas to save the plan content
+        const input = planRef.current;
+        if (!input) return;
+
+        setLoading(true); // Show loader during generation
+
+        try {
+            // 1. Capture the HTML content as a canvas image
+            const canvas = await html2canvas(input, {
+                scale: 2, // Use higher resolution for better PDF quality
+                useCORS: true,
+                windowWidth: input.scrollWidth, // Capture the full width
+                windowHeight: input.scrollHeight, // Capture the full height
+            });
+            
+            // 2. Convert canvas to image data
+            const imgData = canvas.toDataURL('image/jpeg');
+            const pdf = new jsPDF('p', 'mm', 'a4'); 
+            
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            
+            // Calculate image height based on canvas aspect ratio
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+            
+            // 3. Add the image to the PDF
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeight);
+
+            // 4. Download the file
+            pdf.save(`weekly_meal_plan_${new Date().toISOString().slice(0, 10)}.pdf`);
+
+        } catch (error) {
+            console.error("PDF Generation Failed:", error);
+            alert("Failed to generate PDF. Check the console for details.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const inputClass = "w-full bg-white border border-gray-500/70 rounded-lg p-2.5 text-sm shadow-sm outline-none focus:ring-2 focus:ring-yellow-500 transition appearance-none placeholder-gray-400";
@@ -104,12 +143,13 @@ const Dashboard = () => {
             
             {/* --- SIDEBAR (RESPONSIVE DRAWER FIX) --- */}
             <motion.div 
-                // Fix: Sidebar is fixed on mobile (for the drawer effect) and relative on desktop (to be part of the flex layout)
-                // Default visibility is hidden (via translate-x-full) and only shown on 'md' screens (md:flex) or when state is open.
                 initial={false} 
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
-                className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full fixed md:relative transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} md:flex`}
+                // **CORRECT CLASSNAME FOR DESKTOP VISIBILITY**
+                className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
+                    ${isSidebarOpen ? 'fixed translate-x-0' : 'fixed -translate-x-full'} 
+                    md:relative md:flex md:translate-x-0 transition-transform duration-300`} 
             >
                 {/* Logo & Close Button */}
                 <div className="p-6 border-b border-gray-100 flex items-center gap-3 justify-between">
@@ -214,15 +254,15 @@ const Dashboard = () => {
             </motion.div>
 
             {/* --- MAIN CONTENT AREA --- */}
-            {/* Conditional Overlay for Mobile */}
-            {isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
-            
+            {/* Conditional Overlay for Mobile */}
+            {isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
+            
             <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
 
                 {/* --- MOBILE MENU BUTTON --- */}
-                {/* Only show on mobile, and only when the plan is generated (or if we need it visible all the time) */}
                 <div className="md:hidden flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-800">Weekly Plan</h2>
+                    {/* Display title or loading status on mobile header */}
+                    <h2 className="text-xl font-bold text-gray-800">{loading ? 'Generating...' : 'Weekly Plan'}</h2>
                     <button 
                         onClick={() => setIsSidebarOpen(true)}
                         className="p-3 bg-white rounded-xl shadow-md text-gray-700 hover:text-teal-600 transition"
@@ -246,7 +286,8 @@ const Dashboard = () => {
                             <p className="text-gray-500 text-lg max-w-md">Your personalized nutrition journey starts here. Use the sidebar to generate your plan.</p>
                         </motion.div>
                     ) : (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+                        // Attach ref for PDF generation here
+                        <motion.div ref={planRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
                             {/* Header Stats Card with PDF Button */}
                             <div className="bg-white p-6 rounded-2xl shadow-md flex flex-wrap justify-between items-center gap-4 border border-gray-100">
                                 <div>
