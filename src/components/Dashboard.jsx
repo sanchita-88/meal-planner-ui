@@ -7,7 +7,7 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports: STATIC IMPORTS ARE REMOVED TO PREVENT THE MODULE RESOLUTION CRASH.
+// PDF Library Imports: REMOVED STATIC IMPORTS to prevent the "Failed to resolve module specifier" CRASH
 // Logic relies on dynamic imports inside handleExportPDF.
 
 
@@ -101,15 +101,15 @@ const Dashboard = () => {
         setLoading(true); 
 
         try {
-            // Dynamically import libraries (this bypasses the module specifier error)
-            const importedModules = await Promise.all([
-                import('html2canvas'),
-                import('jspdf')
-            ]);
-            
-            // Handle both ES module default exports and legacy exports
-            const importedHtml2canvas = importedModules[0].default || importedModules[0];
-            const importedJsPDF = importedModules[1].default || importedModules[1];
+            // Dynamically import libraries (this bypasses the module specifier error)
+            const importedModules = await Promise.all([
+                import('html2canvas'),
+                import('jspdf')
+            ]);
+            
+            // Handle both ES module default exports and legacy exports
+            const importedHtml2canvas = importedModules[0].default || importedModules[0];
+            const importedJsPDF = importedModules[1].default || importedModules[1];
 
             // 1. Capture the HTML content as a canvas image
             const canvas = await importedHtml2canvas(input, {
@@ -158,17 +158,16 @@ const Dashboard = () => {
 
 
     return (
-        // MODIFIED: Simplified the outer wrapper to use min-h-screen 
-        // and only apply flex on desktop (md:flex)
-        <div className="min-h-screen bg-gray-50 text-gray-800 font-sans md:flex">
+        // FINAL UI FIX 1/2: Simplest and most reliable full screen flex container
+        <div className="flex h-screen bg-gray-50 text-gray-800 font-sans">
             
             {/* --- SIDEBAR (RESPONSIVE DRAWER FIX) --- */}
             <motion.div 
                 initial={false} 
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
-                // FINAL CSS FIX: Ensures MD:relative and MD:flex take precedence, using h-screen.
-              className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-screen 
+                // FINAL UI FIX 2/2: Highest Z-index and ensures MD:relative takes precedence.
+              className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-50 h-screen 
                     fixed ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
                     md:relative md:flex md:translate-x-0 transition-transform duration-300`}
             >
