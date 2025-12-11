@@ -7,9 +7,8 @@ import {
     ChefHat, LogOut, Utensils, Menu 
 } from 'lucide-react'; 
 
-// PDF Library Imports: REMOVED STATIC IMPORTS to prevent the "Failed to resolve module specifier" CRASH
-// import html2canvas from 'html2canvas'; // REMOVED
-// import jsPDF from 'jspdf'; // REMOVED
+// PDF Library Imports: STATIC IMPORTS ARE REMOVED TO PREVENT THE MODULE RESOLUTION CRASH.
+// Logic relies on dynamic imports inside handleExportPDF.
 
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
@@ -159,16 +158,17 @@ const Dashboard = () => {
 
 
     return (
-        // STATIC BACKGROUND: using a subtle off-white background
-        <div className="flex h-screen bg-gray-50 text-gray-800 font-sans">
+        // MODIFIED: Simplified the outer wrapper to use min-h-screen 
+        // and only apply flex on desktop (md:flex)
+        <div className="min-h-screen bg-gray-50 text-gray-800 font-sans md:flex">
             
             {/* --- SIDEBAR (RESPONSIVE DRAWER FIX) --- */}
             <motion.div 
                 initial={false} 
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
-                // **FINAL AGGRESSIVE CSS FIX**
-              className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
+                // FINAL CSS FIX: Ensures MD:relative and MD:flex take precedence, using h-screen.
+              className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-screen 
                     fixed ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
                     md:relative md:flex md:translate-x-0 transition-transform duration-300`}
             >
