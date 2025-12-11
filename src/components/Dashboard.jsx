@@ -99,28 +99,39 @@ const Dashboard = () => {
         const input = planRef.current;
         if (!input) return;
 
-        setLoading(true); // Show loader during generation
+        setLoading(true); 
 
         try {
             // 1. Capture the HTML content as a canvas image
             const canvas = await html2canvas(input, {
-                scale: 2, // Use higher resolution for better PDF quality
+                scale: 2, 
                 useCORS: true,
-                windowWidth: input.scrollWidth, // Capture the full width
-                windowHeight: input.scrollHeight, // Capture the full height
             });
             
-            // 2. Convert canvas to image data
+            // 2. Convert canvas to image data and initialize PDF
             const imgData = canvas.toDataURL('image/jpeg');
-            const pdf = new jsPDF('p', 'mm', 'a4'); 
+            let pdf = new jsPDF('p', 'mm', 'a4'); 
             
             const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
             
             // Calculate image height based on canvas aspect ratio
             const imgHeight = (canvas.height * pdfWidth) / canvas.width;
             
-            // 3. Add the image to the PDF
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeight);
+            // 3. Check if content exceeds one page (Multi-page handling for long plans)
+            if (imgHeight > pdfHeight) {
+                 const totalPages = Math.ceil(imgHeight / pdfHeight);
+                 
+                 for (let i = 0; i < totalPages; i++) {
+                     let position = -(i * pdfHeight);
+                     if (i > 0) {
+                         pdf.addPage();
+                     }
+                     pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+                 }
+            } else {
+                 pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, imgHeight);
+            }
 
             // 4. Download the file
             pdf.save(`weekly_meal_plan_${new Date().toISOString().slice(0, 10)}.pdf`);
@@ -146,7 +157,7 @@ const Dashboard = () => {
                 initial={false} 
                 animate={{ x: isSidebarOpen ? 0 : -320 }} 
                 transition={{ duration: 0.3 }}
-                // **CORRECT CLASSNAME FOR DESKTOP VISIBILITY**
+                // **FIXED CLASSNAME FOR DESKTOP VISIBILITY**
                 className={`w-80 bg-white border-r border-gray-100 flex flex-col shadow-xl z-30 h-full 
                     ${isSidebarOpen ? 'fixed translate-x-0' : 'fixed -translate-x-full'} 
                     md:relative md:flex md:translate-x-0 transition-transform duration-300`} 
@@ -261,7 +272,6 @@ const Dashboard = () => {
 
                 {/* --- MOBILE MENU BUTTON --- */}
                 <div className="md:hidden flex justify-between items-center mb-4">
-                    {/* Display title or loading status on mobile header */}
                     <h2 className="text-xl font-bold text-gray-800">{loading ? 'Generating...' : 'Weekly Plan'}</h2>
                     <button 
                         onClick={() => setIsSidebarOpen(true)}
