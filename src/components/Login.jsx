@@ -96,7 +96,9 @@ return (
                 </div>
 
                 <div className="text-right">
-                    <Link to="/forgot-password" className="text-xs text-pink-600 hover:text-pink-700 font-semibold hover:underline">Forgot Password?</Link>
+                    <button onClick={() => navigate('/forgot-password')} className="text-xs text-pink-600 hover:text-pink-700 font-semibold hover:underline">
+                         Forgot Password?
+                    </button>
                 </div>
 
                 <button className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-200 transition-all transform hover:-translate-y-0.5 animate-pulse-button">
