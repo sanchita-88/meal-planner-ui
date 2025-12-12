@@ -44,8 +44,7 @@
 /* --- NEW ADDITIONS FOR MODERN UI AESTHETICS BELOW --- */
 
 /* 1. ANIMATED GRADIENT BACKGROUND STYLES */
-
-/* --- NEW CLOUD-LIKE BACKGROUND ANIMATION --- */
+/* --- UPDATED CLOUD-LIKE BACKGROUND ANIMATION --- */
 
 @keyframes soft-cloud-shift {
   0% { background-position: 0% 50%; }
@@ -54,16 +53,16 @@
 }
 
 .animated-background {
-  /* Using very light, subtle colors for a "cloudy" feel */
+  /* Using more contrast to make the "clouds" more apparent */
   background: linear-gradient(
     135deg, 
-    #f8f8ff, /* Light Lavender */
-    #f4f4f7, /* Light Gray-Blue */
-    #f8f8ff, /* Light Lavender */
-    #f7e8fc  /* Very Light Pink/Purple */
+    #eee9f2, /* Very Light Purple */
+    #fcf2ff, /* Pale Pink */
+    #e9f2ff, /* Light Blue */
+    #fcf2ff  /* Pale Pink */
   ); 
-  background-size: 400% 400%; /* Makes the gradient shift smoothly */
-  animation: soft-cloud-shift 40s ease infinite; /* Slower animation time */
+  background-size: 400% 400%; /* Keeps the large gradient space */
+  animation: soft-cloud-shift 40s ease infinite; /* Ensures slow motion */
 }
 
 

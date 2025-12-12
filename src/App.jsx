@@ -15,13 +15,13 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-    // FIX: Wrap the entire application in a container with the background class
-    // We also use min-h-screen to ensure it covers the whole viewport.
     return (
+        // RENDER FIX: min-h-screen ensures it covers the full viewport, animated-background provides the motion.
         <div className="min-h-screen animated-background">
             <AuthProvider>
                 <Router>
                     <Routes>
+                        {/* All routes are children of the background div */}
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
