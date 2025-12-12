@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthProvider, { AuthContext } from './context/AuthContext';
@@ -13,26 +15,28 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
-  return (
-    // RESTORED: Removed the outer <div> wrapper for the background
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard" element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            } 
-          />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-    // RESTORED: End of function component
-  );
+    // FIX: Wrap the entire application in a container with the background class
+    // We also use min-h-screen to ensure it covers the whole viewport.
+    return (
+        <div className="min-h-screen animated-background">
+            <AuthProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/dashboard" element={
+                            <PrivateRoute>
+                                <Dashboard />
+                            </PrivateRoute>
+                        } 
+                        />
+                        <Route path="*" element={<Navigate to="/dashboard" />} />
+                    </Routes>
+                </Router>
+            </AuthProvider>
+        </div>
+    );
 }
 
 export default App;
