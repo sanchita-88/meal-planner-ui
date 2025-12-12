@@ -46,24 +46,21 @@
 /* 1. ANIMATED GRADIENT BACKGROUND STYLES */
 /* --- UPDATED CLOUD-LIKE BACKGROUND ANIMATION --- */
 
+/* --- FINAL GUARANTEED BACKGROUND ANIMATION --- */
+
 @keyframes soft-cloud-shift {
   0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; } 
 }
 
+/* This class defines the base animation, but no colors/size */
 .animated-background {
-  /* Using more contrast to make the "clouds" more apparent */
-  background: linear-gradient(
-    135deg, 
-    #eee9f2, /* Very Light Purple */
-    #fcf2ff, /* Pale Pink */
-    #e9f2ff, /* Light Blue */
-    #fcf2ff  /* Pale Pink */
-  ); 
-  background-size: 400% 400%; /* Keeps the large gradient space */
-  animation: soft-cloud-shift 40s ease infinite; /* Ensures slow motion */
+  background-size: 300% 300%; /* Force the large background size */
+  animation: soft-cloud-shift 20s linear infinite; /* Force motion speed */
 }
+
+/* KEEP all your other keyframes (@keyframes scale-in, @keyframes subtle-pulse, etc.) */
+/* and KEEP the corresponding Tailwind classes in your config! */
 
 
 /* 2. LOGO POP-IN ENTRANCE ANIMATION */
