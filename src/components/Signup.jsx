@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, UserPlus, ArrowRight } from 'lucide-react';
+import { Lock, Mail, UserPlus, ArrowRight, ChefHat, ChefHatIcon } from 'lucide-react';
 
 // Define the base URL using the environment variable (Vercel/Vite standard)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
