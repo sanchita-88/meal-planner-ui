@@ -34,7 +34,7 @@ const Login = () => {
 return (
     // FINAL WRAPPER: Simplifies to one wrapper, which centers the card.
     // Relies on App.jsx for min-h-screen and animated-background.
-    <div className="flex items-center justify-center w-full min-h-screen">
+    <div className="flex items-center justify-center w-full min-h-screen perspective-wrapper">
         
         {/* The Card Container: Cleaned up styling and added entrance animation */}
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 animate-scale-in">
@@ -98,7 +98,7 @@ return (
                     <Link to="/forgot-password" className="text-xs text-pink-600 hover:text-pink-700 font-semibold hover:underline">Forgot Password?</Link>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-200 transition-all transform hover:-translate-y-0.5">
+                <button className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-pink-200 transition-all transform hover:-translate-y-0.5 animate-pulse-button">
                     Login
                 </button>
             </form>

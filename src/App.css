@@ -45,18 +45,25 @@
 
 /* 1. ANIMATED GRADIENT BACKGROUND STYLES */
 
-@keyframes gradient-shift {
+/* --- NEW CLOUD-LIKE BACKGROUND ANIMATION --- */
+
+@keyframes soft-cloud-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
 .animated-background {
-  /* Defines the large gradient space using your existing colors (or gentle neutrals) */
-  background: linear-gradient(-45deg, #f0f0f5, #e0e0f0, #d0d0e0, #f0f0f5); 
+  /* Using very light, subtle colors for a "cloudy" feel */
+  background: linear-gradient(
+    135deg, 
+    #f8f8ff, /* Light Lavender */
+    #f4f4f7, /* Light Gray-Blue */
+    #f8f8ff, /* Light Lavender */
+    #f7e8fc  /* Very Light Pink/Purple */
+  ); 
   background-size: 400% 400%; /* Makes the gradient shift smoothly */
-  /* Applies the animation */
-  animation: gradient-shift 30s ease infinite; 
+  animation: soft-cloud-shift 40s ease infinite; /* Slower animation time */
 }
 
 
@@ -81,17 +88,40 @@
 
 /* 3. CARD ENTRANCE ANIMATION (Recommended for Login/Signup Card) */
 
+/* --- UPDATED CARD ENTRANCE ANIMATION (3D Tilt) --- */
+
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.95) rotateX(10deg); /* ADDED slight rotation on the X-axis */
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotateX(0deg);
   }
 }
 
 .animate-scale-in {
+  /* Keep the existing animation properties */
   animation: scale-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+/* --- BUTTON PULSE ANIMATION --- */
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 99, 179, 0.4); /* Pink shadow */
+  }
+  50% {
+    transform: scale(1.01);
+    box-shadow: 0 4px 20px rgba(153, 50, 204, 0.6); /* Purple shadow */
+  }
+}
+
+.animate-pulse-button {
+  animation: subtle-pulse 4s infinite ease-in-out;
+}
+/* --- PERSPECTIVE WRAPPER CSS (Required for 3D Tilt) --- */
+.perspective-wrapper {
+    perspective: 1000px;
 }
