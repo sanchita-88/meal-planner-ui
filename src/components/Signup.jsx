@@ -95,6 +95,7 @@ const Signup = () => {
                                 placeholder="Create password"
                                 className="w-full bg-transparent outline-none text-sm text-gray-700"
                                 value={password} onChange={(e) => setPassword(e.target.value)}
+                                autocomplete="new-password" // <-- ADD THIS
                                 required
                             />
                         </div>
@@ -110,6 +111,7 @@ const Signup = () => {
                                 placeholder="Repeat password"
                                 className="w-full bg-transparent outline-none text-sm text-gray-700"
                                 value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                autocomplete="new-password" // <-- ADD THIS
                                 required
                             />
                         </div>

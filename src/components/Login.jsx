@@ -75,6 +75,7 @@ return (
                             className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                             value={email} onChange={(e) => setEmail(e.target.value)}
                             required
+                            autocomplete="current-password" // <-- ADD THIS
                         />
                     </div>
                 </div>
