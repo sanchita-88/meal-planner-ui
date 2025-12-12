@@ -75,7 +75,7 @@ return (
                             className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                             value={email} onChange={(e) => setEmail(e.target.value)}
                             required
-                            autocomplete="current-password" // <-- ADD THIS
+                            autocomplete="email" // <-- FIX 1: Set email input to 'email'
                         />
                     </div>
                 </div>
@@ -91,6 +91,7 @@ return (
                             className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                             value={password} onChange={(e) => setPassword(e.target.value)}
                             required
+                            autocomplete="current-password" // <-- FIX 2: Set password input to 'current-password'
                         />
                     </div>
                 </div>
