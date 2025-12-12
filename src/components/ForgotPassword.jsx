@@ -93,6 +93,7 @@ const ForgotPassword = () => {
                                     className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                     value={email} onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    autocomplete="email" // <-- ADD THIS
                                 />
                             </div>
                         </div>
@@ -129,6 +130,7 @@ const ForgotPassword = () => {
                                     className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                     value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
                                     required
+                                    autocomplete="new-password" // <-- THIS MUST BE PRESENT
                                 />
                             </div>
                         </div>
