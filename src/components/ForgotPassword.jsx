@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Key, Lock, ArrowLeft, ChefHat, Loader2 } from 'lucide-react'; // ADDED ChefHat and Loader2
 
 // Define the base URL using the environment variable
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'; // Using fallback now
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const ForgotPassword = () => {
     const [step, setStep] = useState(1); // 1 = Request OTP, 2 = Reset Password
@@ -115,6 +115,7 @@ const ForgotPassword = () => {
                                     placeholder="6-digit code"
                                     className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                     value={otp} onChange={(e) => setOtp(e.target.value)}
+                                    autocomplete="one-time-code" // <-- Use this for OTP/Code fields
                                     required
                                 />
                             </div>
@@ -129,8 +130,8 @@ const ForgotPassword = () => {
                                     placeholder="Enter new password"
                                     className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                     value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+                                    autocomplete="new-password" // <-- MUST BE PRESENT
                                     required
-                                    autocomplete="new-password" // <-- THIS MUST BE PRESENT
                                 />
                             </div>
                         </div>
