@@ -65,7 +65,6 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
 
                     {/* Input 1: Email (FIXED focus-within border) */}
-                // Email Input Block
                     <div>
                         <label htmlFor="email-login" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Email</label>
                         <div className="flex items-center border border-gray-200 rounded-xl p-2.5 bg-white/50 focus-within:ring-2 focus-within:ring-pink-400 focus-within:border-pink-400 transition">
@@ -84,7 +83,6 @@ const Login = () => {
                     </div>
 
                     {/* Input 2: Password (FIXED focus-within border) */}
-                    // Password Input Block
                     <div>
                         <label htmlFor="password-login" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Password</label>
                         <div className="flex items-center border border-gray-200 rounded-xl p-2.5 bg-white/50 focus-within:ring-2 focus-within:ring-pink-400 focus-within:border-pink-400 transition">
